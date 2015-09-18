@@ -500,6 +500,25 @@ declare module olx {
             //TODO: Replace with olx.control.ZoomOptions
             zoomOptions?: any;
         }
+
+        interface ControlOptions {
+
+            /**
+             * The element is the control's container element. This only needs to be specified if you're developing a custom control.
+             */
+            element?: Element;
+
+            /**
+             * Function called when the control should be re-rendered. This is called in a requestAnimationFrame callback.
+             */
+            render?: () => void;
+
+            /**
+             * Specify a target if you want the control to be rendered outside of the map's viewport.
+             */
+            target?: Element | string;
+        }
+
     }
 
     module interaction {
@@ -1903,16 +1922,7 @@ declare module ol {
          * @param ref The object to use as this in listener.
          * @returns Unique key for the listener.
          */
-        on(type: string, listener: (event: MapBrowserEvent) => void, ref?: any): any;
-
-        /**
-         * Listen for a certain type of event.
-         * @param type The array of event types.
-         * @param listener The listener function.
-         * @param ref The object to use as this in listener.
-         * @returns Unique key for the listener.
-         */
-        on(type: Array<string>, listener: (event: MapBrowserEvent) => void, ref?: any): any;
+        on(type: string | Array<string>, listener: (event: MapBrowserEvent) => void, ref?: any): any;
 
         /**
          * Listen once for a certain type of event.
@@ -1921,25 +1931,16 @@ declare module ol {
          * @param ref The object to use as this in listener.
          * @returns Unique key for the listener.
          */
-        once(type: string, listener: (event: MapBrowserEvent) => void, ref?: any): any;
-
-        /**
-         * Listen once for a certain type of event.
-         * @param type The array of event types.
-         * @param listener The listener function.
-         * @param ref The object to use as this in listener.
-         * @returns Unique key for the listener.
-         */
-        once(type: Array<string>, listener: (event: MapBrowserEvent) => void, ref?: any): any;
+        once(type: string | Array<string>, listener: (event: MapBrowserEvent) => void, ref?: any): any;
 
         /**
          * Unlisten for a certain type of event.
-         * @param type The array of event types.
+         * @param type The event type.
          * @param listener The listener function.
          * @param ref The object to use as this in listener.
          * @returns Unique key for the listener.
          */
-        un(type: Array<string>, listener: (event: MapBrowserEvent) => void, ref?: any): any;
+        un(type: string | Array<string>, listener: (event: MapBrowserEvent) => void, ref?: any): any;
 
         /**
          * Removes an event listener using the key returned by on() or once(). Note that using the ol.Observable.unByKey static function is to be preferred.
@@ -2279,6 +2280,12 @@ declare module ol {
         }
 
         class Control {
+
+            /**
+             * @constructor
+             * @param options Options.
+             */
+            constructor(options?: olx.control.ControlOptions);
         }
 
         class FullScreen {
@@ -2839,6 +2846,7 @@ declare module ol {
         }
 
         class Modify {
+            constructor(options: any) //TODO: Create real options
         }
 
         class MouseWheelZoom {
@@ -3326,7 +3334,8 @@ declare module ol {
         class BingMaps {
         }
 
-        class Cluster {
+        class Cluster extends Vector { //TODO: Not complete
+            constructor(options: any); //TODO: Create real options
         }
 
         class Image {
@@ -3393,14 +3402,39 @@ declare module ol {
         }
 
         class Vector {
-          constructor(opts: olx.source.VectorOptions)
+            constructor(options?: olx.source.VectorOptions)
 
-          /**
-           * Get the extent of the features currently in the source.
-           */
-          getExtent(): ol.Extent;
+            /**
+            * Get the extent of the features currently in the source.
+            */
+            getExtent(): ol.Extent;
 
-          getFeaturesInExtent(extent: ol.Extent): ol.Feature[];
+            getFeaturesInExtent(extent: ol.Extent): ol.Feature[];
+
+            /**
+             * Remove all features from the source.
+             */
+            clear(fast?: boolean);
+
+            /**
+             * Add a single feature to the source. If you want to add a batch of features at once, call source.addFeatures() instead.
+             */
+            addFeature(features: ol.Feature)
+
+            /**
+             * Add a batch of features to the source.
+             */
+            addFeatures(features: Array<ol.Feature>)
+
+            /**
+             * Remove a single feature from the source. If you want to remove all features at once, use the source.clear() method instead.
+             */
+            removeFeature(feature: ol.Feature)
+
+            /**
+             * Get a feature by its identifier (the value returned by feature.getId()). Note that the index treats string and numeric identifiers as the same. So source.getFeatureById(2) will return a feature with id '2' or 2.
+             */
+            getFeatureById(id: string | number)
         }
 
         class VectorEvent {
@@ -3409,7 +3443,13 @@ declare module ol {
         class WMTS {
         }
 
-        class XYZ {
+        class XYZ { //TODO: Not complete
+            constructor(options: any) //TODO: Replace with real options
+
+            /**
+            * Set the URL to use for requests.
+            */            
+            setUrl(url: string)
         }
 
         class Zoomify {
@@ -3431,6 +3471,7 @@ declare module ol {
         }
 
         class Circle {
+            constructor(options?: any) //TODO: Create real options
         }
 
         /**
@@ -3451,6 +3492,8 @@ declare module ol {
         }
 
         class Icon {
+
+            constructor(options?: any) //TODO: Create real options
         }
 
         class Image {
@@ -3464,7 +3507,7 @@ declare module ol {
         }
 
         class Stroke {
-            constructor();
+            constructor(options?: any); //TODO: Create real options
         }
 
         /**
